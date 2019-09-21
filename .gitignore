@@ -8,6 +8,7 @@ pom.xml.asc
 *.class
 *.swp
 *.swo
+*.swn
 /.lein-*
 /.nrepl-port
 .hgignore
