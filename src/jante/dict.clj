@@ -11,6 +11,7 @@
    (get-in local-state [:pairs key_]))
 
 (defn parse
+  {:events {:on-message (fn [{recipient :recipient}] (= recipient :local))}}
   [local-state message]
   (if (not= (:recipient message) :local)
     ; If the message is not ment for the bot, do nothing

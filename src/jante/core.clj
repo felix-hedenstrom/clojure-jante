@@ -1,6 +1,7 @@
 (ns jante.core
   (:require [jante.cli :refer [recieve]]
             [jante.message :refer [print-message]]
+            [jante.event :refer [get-all-triggered-by]] 
             [jante.dict :refer [parse]]))
 
 (def default-plugin-state 
@@ -23,6 +24,7 @@
 (defn get-messages
   [state]
   (:messages state))
+
 (defn get-plugin-messages
   [state plugin]
   (get-in state [:plugin-states plugin :messages]))
