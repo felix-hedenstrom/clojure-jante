@@ -1,8 +1,8 @@
 (ns jante.plugin-namespaces
-  (:require [jante.dict]
+  (:require [jante.plugin.dict.dict]
             [jante.plugin.stats]))
 
 (def namespaces
-  (list [:dict 'jante.dict]
+  (list [:dict 'jante.plugin.dict.dict]
         ;[:stats 'jante.plugin.stats]))
         ))

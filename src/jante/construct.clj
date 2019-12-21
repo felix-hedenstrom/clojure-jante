@@ -2,14 +2,12 @@
 
 (defn new-bot
   []
-  {
-    :messages '()
-    :plugin-states {} 
-   })
+  {:messages '()
+   :plugin-states {}})
 
 (defn set-plugin-state
   [state plugin plugin-state]
-  (assoc-in state [:plugin-states plugin] plugin-state)) 
+  (assoc-in state [:plugin-states plugin] plugin-state))
 
 (defn add-messages
   [state messages]

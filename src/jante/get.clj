@@ -12,7 +12,6 @@
   [message]
   (get message :recipient))
 
-
 (defn get-plugin-messages
   [state plugin]
   (get-in state [:plugin-states plugin :messages]))

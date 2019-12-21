@@ -1,22 +1,21 @@
-(ns jante.io.io-manager)
+(ns jante.io.io-manager
+  (:require [jante.io.cli :refer [incoming-messages outgoing-messages]]
+            [jante.util :refer [log]]))
 
+(defn send-and-recieve
+  [messages]
+  (outgoing-messages messages)
+  (let [messages (incoming-messages)]
+    (log messages)
+    messages))
 
 (def default-io-manager
-  {:io-type :cli
-   :incoming-messages []
-   :outgoing-messages ["Hello world" "This is a test" "Does this work?"]})
+  {:messages '()})
 
 (defn new-io-manager
   []
   default-io-manager)
 
-(defn get-outgoing-messages
+(defn get-messages
   [io-manager]
   (:outgoing-messages io-manager))
-
-(defn send-messages
-  [io-manager]
-  (do 
-    (reduce (fn [_ message] (println message)) (get-outgoing-messages io-manager) [])
-    (assoc io-manager :outgoing-messages []))) 
-

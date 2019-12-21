@@ -5,7 +5,7 @@
   {:events {:on-message (fn [data] true)}}
   [plugin-state message]
   (update plugin-state (get-recipient message)
-    (fn [messages-count] 
-      (if (nil? messages-count)
-          1
-          (inc messages-count)))))
+          (fn [messages-count]
+            (if (nil? messages-count)
+              1
+              (inc messages-count)))))
