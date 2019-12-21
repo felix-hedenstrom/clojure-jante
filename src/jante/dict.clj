@@ -1,5 +1,6 @@
 (ns jante.dict
-  (:require [jante.util :refer [nil-if-empty]]))
+  (:require [jante.util :refer [nil-if-empty]]
+            [jante.message :refer [get-text respond]]))
 
 
 (defn put-pair
@@ -12,7 +13,6 @@
 
 (def prefix "dict")
 
-
 (defn parse
   {:events 
    {:on-message 
@@ -23,22 +23,10 @@
             (re-pattern)
             (re-matches text))))}}
   [local-state message]
-  (if (not= (:recipient message) :local)
-    ; If the message is not ment for the bot, do nothing
-    local-state
-    (let [[local-state text] 
-            (if-let [[k v] (nil-if-empty (rest (re-matches #"\s*(.+?)\s*:=\s*(.+?)\s*" (:text message))))]
-              [(put-pair local-state k v) (str "Added key-value pair " k ":= " v)]
-              [local-state 
-                (if-let [answer (get-key local-state (:text message))]
-                  answer,
-                  "Could not find key")])]
-      (update local-state :messages 
-        #(conj % 
-          {
-            :text text
-            :sender :dict
-            :recipient (:sender message)
-          })))))
-
-       
+  (if-let [[k v] (nil-if-empty (rest (re-matches #"\s*(.+?)\s*:=\s*(.+?)\s*" (:text message))))]
+    [(put-pair local-state k v) [(respond message (str "Added key-value pair " k ":= " v))]]
+    [local-state
+      [(->> (if-let [answer (get-key local-state (:text message))]
+              answer
+              "Could not find key")
+           (respond message))]]))

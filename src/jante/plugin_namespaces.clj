@@ -4,4 +4,5 @@
 
 (def namespaces
   (list [:dict 'jante.dict]
-        [:stats 'jante.plugin.stats]))
+        ;[:stats 'jante.plugin.stats]))
+        ))

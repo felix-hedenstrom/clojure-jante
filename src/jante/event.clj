@@ -1,6 +1,6 @@
 (ns jante.event
   (:require [jante.plugin-namespaces]
-            [jante.construct :refer [update-plugin]]
+            [jante.construct :refer [set-plugin-state get-plugin-state add-messages]]
             [clojure.test :refer [is]]))
             
  
@@ -51,5 +51,8 @@
     (if (empty? triggered)
       state
       (let [[plugin func] (first triggered)]
-        (recur (update-plugin state plugin #(func % data))  (rest triggered))))))
-      
+        (let [[plugin-state messages] (func (get-plugin-state state plugin) data)]
+          (recur 
+            (-> (set-plugin-state state plugin plugin-state)
+                (add-messages messages))
+            (rest triggered)))))))
