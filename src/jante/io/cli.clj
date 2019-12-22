@@ -6,11 +6,14 @@
   (if-let [text (read-line)]
     (if (empty? text)
       []
-      [{:sender :cli
-        :recipient :local
-        :text text}])))
+      (do
+        (print ">")
+        (flush)
+        [{:sender :cli
+          :recipient :local
+          :text text}]))))
 
-(defn outgoing-messages
+(defn send-outgoing-messages
   [messages]
   (loop [messages messages]
     (if-let [message (first messages)]
