@@ -1,4 +1,5 @@
 (ns jante.core
+  (:gen-class)
   (:require
    [jante.message :refer [get-text]]
    [jante.get :refer [get-plugins
@@ -34,4 +35,3 @@
   (print ">")
   (log "Initializing the bot")
   (main-loop (new-bot)))
-

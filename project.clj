@@ -7,4 +7,6 @@
   :main ^:skip-aot jante.core
   :plugins [[lein-cljfmt "0.6.6"]]
   :target-path "target/%s"
-  :profiles {:uberjar {:aot :all}})
+  :profiles {:uberjar {:aot :all
+                       :env {:production true}
+                       :main jante.core}})
