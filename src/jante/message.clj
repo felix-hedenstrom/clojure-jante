@@ -14,17 +14,24 @@
   [message]
   (:recipient message))
 
+(defn get-owner
+  [message]
+  (:owner message))
+
+(defn new-message
+  [{text :text owner :owner sender :sender recipient :recipient}]
+  {:text text
+   :sender sender
+   :owner (or owner sender)
+   :recipient recipient})
+
 (defn respond
   [message text]
   {:text text
    :sender (get-recipient message)
+   :owner (get-owner message)
    :recipient (get-sender message)})
 
-(defn print-message
+(defn internal?
   [message]
-  (println line)
-  (println "Sender: " (get message :sender))
-  (println "Recipient: " (get message :recipient))
-  (println "Text: " (get message :text))
-  (println line))
-
+  (= (get-recipient message) :local))

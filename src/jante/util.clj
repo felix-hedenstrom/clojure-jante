@@ -8,7 +8,17 @@
     arg))
 
 (defn log
+  [& text]
+  (print (str (System/currentTimeMillis) ": "))
+  (apply print text)
+  (println)
+  (print ">")
+  (flush))
+
+(defn debug
   [& args]
-  (pprint args)
+  (println)
+  (doseq [arg args]
+    (pprint arg))
   (print ">")
   (flush))

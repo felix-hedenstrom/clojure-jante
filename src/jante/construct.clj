@@ -1,5 +1,6 @@
 (ns jante.construct
-  (:require [jante.io.io-manager :refer [new-io-manager]]))
+  (:require [jante.io.io-manager :refer [new-io-manager]]
+            [clojure.test :refer [is]]))
 
 (defn get-io-manager
   [state]
@@ -22,16 +23,31 @@
   [state plugin plugin-state]
   (assoc-in state [:plugin-states plugin] plugin-state))
 
-(defn update-incoming-messages
+(defn add-messages
+  {:test (fn []
+           (is
+            (-> (new-bot)
+                (add-messages [(jante.message/new-message {:text "Hello World!"})])
+                (get-io-manager)
+                (jante.io.io-manager/get-internal-messages)
+                (count))
+            (= 1)))}
+  [state messages]
+  (update state :io-manager #(jante.io.io-manager/add-messages % messages)))
+
+(defn update-internal-messages
+  {:test (fn []
+           (-> (new-bot)
+               (add-messages [(jante.message/new-message {:text "Hello World!"})])
+               (update-internal-messages rest)
+               (get-io-manager)
+               (jante.io.io-manager/get-all-messages)
+               (empty?)))}
   [state fn]
-  (update state :io-manager #(jante.io.io-manager/update-incoming-messages % fn)))
+  (update state :io-manager #(jante.io.io-manager/update-internal-messages % fn)))
 
 (defn send-and-recieve
   [state]
   (update state :io-manager jante.io.io-manager/send-and-recieve))
-
-(defn add-messages
-  [state messages]
-  (update state :messages #(concat % messages)))
 
 
