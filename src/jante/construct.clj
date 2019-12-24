@@ -14,10 +14,28 @@
   [state plugin]
   (get-in state [:plugin-states plugin]))
 
+(defn load-bot
+  [path]
+  ; Using try since this is only done once when the bot is running. If this was more often i would look into smarter ways to do this
+  (if-let [file-content (try
+                          (slurp path)
+                          (catch Exception e
+                            nil))]
+    (clojure.edn/read-string file-content)))
+
+(defn save-bot
+  [state path]
+  (->> (with-out-str (clojure.pprint/pprint state))
+       (spit path)))
+
 (defn new-bot
   []
   {:io-manager (new-io-manager)
    :plugin-states {}})
+
+(defn init
+  [state]
+  (update state :io-manager jante.io.io-manager/init))
 
 (defn set-plugin-state
   [state plugin plugin-state]
@@ -50,4 +68,8 @@
   [state]
   (update state :io-manager jante.io.io-manager/send-and-recieve))
 
-
+(defn pop-internal-message
+  [state]
+  (let [message (first (get-internal-messages state))]
+    [(update-internal-messages state rest)
+     message]))

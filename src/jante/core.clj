@@ -8,18 +8,34 @@
                       get-plugin-messages]]
    [jante.event :refer [trigger-event]]
    [jante.util :refer [nil-if-empty log debug]]
-   [jante.construct :refer [new-bot update-internal-messages get-internal-messages send-and-recieve]]))
+   [jante.construct :refer [new-bot
+                            update-internal-messages
+                            get-internal-messages
+                            pop-internal-message
+                            save-bot
+                            load-bot
+                            send-and-recieve
+                            init]]))
+
+(def save-path "/tmp/bot.state")
+
+(defn shutdown
+  [state]
+  (do
+    (log "Saving bot...")
+    ; Sideeffects through IO
+    (save-bot state save-path)
+    (log "Bot was saved!")
+    (log "Shutting down.")))
 
 (defn main-loop
   [state]
-  (log "Bot initialized")
   (loop [state state]
-    (if-let [messages (-> (get-internal-messages state)
-                          (nil-if-empty))]
-      (let [message (first messages)]
+    (let [[state message] (pop-internal-message state)]
+      (if (not (nil? message))
         (cond
           (= (get-text message) "(quit)")
-          nil
+          (shutdown state)
           ; This should be remade
           (= (get-text message) "(state)")
           (do (debug state)
@@ -27,11 +43,21 @@
           :else
               ; Run all plugins and update their internal states
           (recur (-> (trigger-event state :on-message message)
-                     (update-internal-messages rest)))))
-      (recur (send-and-recieve state)))))
+                     (update-internal-messages rest))))
+        (recur (send-and-recieve state))))))
 
 (defn -main
   [& args]
   (print ">")
-  (log "Initializing the bot")
-  (main-loop (new-bot)))
+  (log "Trying to load the bot...")
+  (let [bot
+        (if-let [bot (load-bot save-path)]
+            ; Add any new plugins/features if they don't already exist in the saved state
+          (merge (new-bot) bot)
+          (do
+            (log "Could not load the bot. Creating a new..")
+            (new-bot)))]
+    (log "Initializing the bot")
+    (let [initialized-bot (init bot)]
+      (log "Bot has been initialized")
+      (main-loop initialized-bot))))

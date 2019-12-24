@@ -1,6 +1,7 @@
 (ns jante.io.io-manager
   (:require [jante.io.cli :refer [incoming-messages send-outgoing-messages]]
             [clojure.test :refer [is]]
+            [clojure.core.async :as async]
             [jante.message :refer [internal?]]
             [jante.util :refer [log]]))
 
@@ -28,6 +29,10 @@
 (defn get-all-messages
   [io-manager]
   (concat (get-unclassified-messages io-manager) (get-outgoing-messages io-manager) (get-internal-messages io-manager)))
+
+(defn init
+  [io-manager]
+  io-manager)
 
 (defn classify-messages
   [io-manager]
