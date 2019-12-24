@@ -25,7 +25,7 @@
     (log "Saving bot...")
     ; Sideeffects through IO
     (save-bot state save-path)
-    (log "Bot was saved!")
+    (log "Saved contents of bot!")
     (log "Shutting down.")))
 
 (defn main-loop
@@ -48,6 +48,7 @@
 
 (defn -main
   [& args]
+  (jante.util/clear-screen)
   (print ">")
   (log "Trying to load the bot...")
   (let [bot
@@ -55,7 +56,7 @@
             ; Add any new plugins/features if they don't already exist in the saved state
           (merge (new-bot) bot)
           (do
-            (log "Could not load the bot. Creating a new..")
+            (log "Could not load the bot. Creating resetting to default contents...")
             (new-bot)))]
     (log "Initializing the bot")
     (let [initialized-bot (init bot)]
